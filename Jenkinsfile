@@ -21,7 +21,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'pytest || echo "No tests available"'
+                sh 'python3 -m pytest || echo "No tests available"'
             }
         }
 
