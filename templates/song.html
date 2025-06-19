@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Mood Detection</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="phone-frame">
+        <header class="floating-header">
+            <h1>MoodTunes</h1>
+        </header>
+        <div class="container">
+            <h2 class="song-title">{{ title }}</h2>
+            <form method="POST" action="/detect">
+                <textarea name="lyrics" readonly>{{ lyrics }}</textarea>
+                <input type="hidden" name="title" value="{{ title }}">
+                <button type="submit">Detect Mood</button>
+            </form>
+            <a href="/" class="back-link">← Back to Songs</a>
+        </div>
+    </div>
+</body>
+</html>
+
+

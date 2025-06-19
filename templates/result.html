@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }} - Mood Result</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
+  </head>
+  <body>
+    <div class="phone-frame">
+      <header class="floating-header">
+        <h1>MoodTunes</h1>
+      </header>
+      <div class="container">
+        <div id="animation" class="lottie-container mood-circle"></div>
+        <h2 class="song-title">{{ title }}</h2>
+        <h3>
+          Your Mood is:
+          <span class="mood-highlight">{{ mood|capitalize }}</span>
+        </h3>
+        <div class="player-controls">
+          <button>⏮</button>
+          <button class="play-button" onclick="togglePlay()">▶</button>
+          <button>⏭</button>
+        </div>
+        <div class="progress-container">
+          <span id="current-time" class="progress-time">0:00</span>
+          <div class="progress-line">
+            <div class="progress-thumb" style="left: 0%"></div>
+          </div>
+          <span id="duration" class="progress-time">0:00</span>
+        </div>
+        <a href="/" class="back-link">← Back to Songs</a>
+      </div>
+    </div>
+    <script>
+      const animation = bodymovin.loadAnimation({
+        container: document.getElementById("animation"),
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        path: "/static/animations/{{ mood }}.json",
+      });
+    </script>
+
+    <audio id="player" src="/static/audio/{{ song_name }}.mp3"></audio>
+    <script>
+      const player = document.getElementById("player");
+      const playBtn = document.querySelector(".play-button");
+      const thumb = document.querySelector(".progress-thumb");
+      const currentTimeLabel = document.getElementById("current-time");
+      const durationLabel = document.getElementById("duration");
+
+      function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${m}:${s.toString().padStart(2, "0")}`;
+      }
+
+      function togglePlay() {
+        if (player.paused) {
+          player.play();
+          playBtn.textContent = "⏸";
+        } else {
+          player.pause();
+          playBtn.textContent = "▶";
+        }
+      }
+
+      player.ontimeupdate = () => {
+        const percent = (player.currentTime / player.duration) * 100;
+        thumb.style.left = percent + "%";
+        currentTimeLabel.textContent = formatTime(player.currentTime);
+      };
+
+      player.onloadedmetadata = () => {
+        durationLabel.textContent = formatTime(player.duration);
+      };
+
+    </script>
+  </body>
+</html>
