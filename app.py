@@ -15,11 +15,6 @@ def index():
     filtered_songs = {k: v for k, v in SONGS.items() if query in k.lower()}
     return render_template('index.html', songs=filtered_songs, query=query)
 
-@app.route('/song/<title>')
-def song(title):
-    lyrics = SONGS.get(title, '')
-    return render_template('song.html', title=title, lyrics=lyrics)
-
 @app.route('/detect', methods=['POST'])
 def detect():
     title = request.form['title']
@@ -29,14 +24,21 @@ def detect():
     polarity = blob.sentiment.polarity
     mood = classify_mood(polarity)
 
+    print(f"Detected mood: {mood}")  # debug
+
+    try:
+        send_metric(f"mood_music.{mood}", 1)
+        send_metric("mood_music.total", 1)
+        print(f"Metric sent: mood_music.{mood}")  # debug
+    except Exception as e:
+        print(f"Metric send failed: {e}")  # debug
+
     # Convert to lowercase and underscores: e.g., "Someone Like You" → "someone_like_you"
     raw_name = title.split(' - ')[0].strip()
     song_name = re.sub(r'\W+', '_', raw_name).lower()
 
-    send_metric(f"mood_music.{mood}", 1)
-    send_metric("mood_music.total", 1)
-
     return render_template('result.html', title=title, mood=mood, song_name=song_name)
+
 
 
 from textblob import TextBlob
