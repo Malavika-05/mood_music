@@ -61,6 +61,6 @@ if __name__ == '__main__':
 def send_metric(metric, value):
     message = f"{metric}:{value}|c"
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(message.encode(), ("localhost", 8181))
+    sock.sendto(message.encode(), ("graphite", 8125))
 
 
