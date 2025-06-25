@@ -58,7 +58,7 @@ def classify_mood(p):
 def send_metric(metric, value):
     message = f"{metric}:{value}|c"
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(message.encode(), ("graphite", 8125))
+    sock.sendto(message.encode(), ("172.18.0.3", 8125))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
