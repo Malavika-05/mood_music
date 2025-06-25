@@ -54,13 +54,14 @@ def classify_mood(p):
         return 'angry'
     else:
         return 'sad'
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
-
+    
 def send_metric(metric, value):
     message = f"{metric}:{value}|c"
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(message.encode(), ("graphite", 8125))
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
+
 
 
