@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from textblob import TextBlob
 import json
 import re
+import socket
 
 app = Flask(__name__)
 
@@ -32,6 +33,9 @@ def detect():
     raw_name = title.split(' - ')[0].strip()
     song_name = re.sub(r'\W+', '_', raw_name).lower()
 
+    send_metric(f"mood_music.{mood}", 1)
+    send_metric("mood_music.total", 1)
+
     return render_template('result.html', title=title, mood=mood, song_name=song_name)
 
 
@@ -53,5 +57,10 @@ def classify_mood(p):
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
+
+def send_metric(metric, value):
+    message = f"{metric}:{value}|c"
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.sendto(message.encode(), ("localhost", 8125))
 
 
